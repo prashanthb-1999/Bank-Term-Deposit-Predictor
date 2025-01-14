@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Term-Deposit Predictor</title>
+    <style>
+        /* basic styling  */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            margin-bottom: 0px;
+            background-image: url('static/hand-drawn-minimal-abstract-blue-grey-shape-background_643365-41.avif');
+            /*  image file path */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #007bff;
+        }
+
+        h1 {
+            color: #333;
+            /* Setting heading color */
+        }
+        form {
+            margin: 0px 0px; 
+            background-color: #B0E0E6;
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
+            display: none; 
+        }
+
+        form label {
+            display: inline-block;
+            width: 2px; 
+            margin-bottom: 2px;
+        }
+
+        form select,
+        form input {
+            width: calc(100% - 3px);
+            padding: 2px; 
+            box-sizing: border-box;
+            margin-bottom: 1px;
+            border: 1px solid #ccc;
+            border-radius: 1px;
+        }
+
+
+        form button {
+            margin-top: 5px;
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 16px; 
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
+        }
+
+
+        .result {
+            margin-top: 5px;
+            margin-left: 200px;
+            background-color: #fff;
+            /* Setting result background color */
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none; 
+        }
+
+        /* Styling buttons */
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Styling file input */
+        input[type="file"] {
+            margin-top: 8px;
+        }
+
+        /* Styling progress bar */
+        #progress-bar {
+            width: 80%;
+            background-color: #fff;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        #progress {
+            width: 0;
+            height: 20px;
+            background-color: #4caf50;
+            border-radius: 5px;
+        }
+
+        .form-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            margin-bottom: 0px;
+        }
+
+        .form-container>div {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="text-align: center; margin-top: 2px;">Bank Term-Deposit Predictor</h1>
+
+    <!-- Form Predict Button -->
+    <div class="form-container">
+        <div style="margin-left: 250px;">
+            <button onclick="openForm('predict-form')">Enter Customer Details</button>
+        </div>
+
+        <!-- File Predict Button -->
+        <div style="margin-left: 20px;">
+            <button onclick="openForm('file-form')">Enter Customer Dataset</button>
+        </div>
+        <div style="margin-left: 20px;">
+            <button id='ana' onclick="redirectToPage('analysis')">Analysis Charts</button>
+        </div>
+        <div style="margin-left: 20px;">
+            <button onclick="displayText1()">Recommendations</button>
+        </div>
+        <div style="margin-left: 20px;">
+            <button onclick="displayText2()">About</button>
+        </div>
+
+        <div style="margin-left: 20px;">
+            <button onclick="displayText3()">UserGuide</button>
+        </div>
+    </div>
+    <!-- Displaying Text -->
+    <div id="text1-display" style="margin-top: 20px;margin-right: 200px;margin-left: 200px; text-align: center; display: none;">
+        <p>Based on the analysis charts, we recommend customers who are having better education, who use cellular as contact,who have high duration feature and who's previous outcome is success to get term deposit approved.</p>
+    </div>
+    <div id="text2-display" style="margin-top: 20px;margin-right: 200px;margin-left: 200px; text-align: center; display: none;">
+        <p>This website predicts Bank term deposits for the customers. The Predictions are made based on a random forest model. The employees can input the customer data in the Web UI and get a prediction on how likely it will be for the customer to enroll in the term deposit. They can either input the data for just a single customer and get a prediction for it along with the likelihood of enrolling for the term deposit. Or they can input a whole dataset in the form of a .csv file and the UI will return the dataset along with the predictions and likelihood of each customer in the dataset for enrolling in the term deposit. There are also some charts generated based on the dataset given as input to help the users analyses and understand the trends of customer behavior when enrolling for a term deposit. Along, with this some recommendations are present for the users to read and understand the customers behavior a bit more.</p>
+    </div>
+    <div id="text3-display" style="margin-top: 20px; text-align: center; display: none;">
+        <h3>On the Home Page:</h3>
+        <p>If you click on the ‘Enter Customer Details’ button, a form will be displayed where Customer details can be entered.</p>
+        <p>When you click on ‘Predict’, the output will show how likely the customer is to enroll in a term-deposit. Sample Input:</p>
+        <ul>
+            <li>Education: primary</li>
+            <li>Housing: yes</li>
+            <li>Contact: cellular</li>
+            <li>Duration: 1000</li>
+            <li>Campaign: 4</li>
+            <li>Pdays: 200</li>
+            <li>Previous: 4</li>
+            <li>Poutcome: success</li>
+        </ul>
+    
+        <h3>If you click on the ‘Enter Customer Dataset’ button:</h3>
+        <p>You will see an option to upload a CSV file. Upload the sample test dataset (test.csv) present in the src/phase3 folder.</p>
+        <p>The output will show the predictions along with the probability of enrolling in a tabular format.</p>
+    
+        <h3>If you click on the ‘Analysis Charts’ button:</h3>
+        <p>You will see the generated plots/charts related to the uploaded customer dataset depicting various patterns and trends of the customers.</p>
+    
+        <h3>If you click on the ‘Recommendations’ button:</h3>
+        <p>You will see recommendations meant for the user on what kind of customers to target based on the customer dataset.</p>
+    
+        <h3>If you click on the ‘About’ button:</h3>
+        <p>You will see general information about the product.</p>
+    
+        <h3>If you click on the ‘User Guide’ button:</h3>
+        <p>You will see instructions on how to use the data product like this instruction guide.</p>
+    </div>
+    
+    <div class="form-container">
+        <div style="flex: 1; margin-left: 200px;">
+            <form id="predict-form">
+                <h2 style="text-align: center;">Enter Customer details</h2>
+                <label for="education">Education:</label>
+                <select name="education" required>
+                    <option value="primary">Primary</option>
+                    <option value="secondary">Secondary</option>
+                    <option value="tertiary">Tertiary</option>
+                </select><br>
+
+                <label for="housing">Housing:</label>
+                <select name="housing" required>
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select><br>
+
+                <label for="contact">Contact:</label>
+                <select name="contact" required>
+                    <option value="cellular">Cellular</option>
+                    <option value="telephone">Telephone</option>
+                    <option value="unknown">Unknown</option>
+                </select><br>
+
+                <label for="duration">Duration:</label>
+                <input type="text" name="duration" pattern="[0-9]+([.][0-9]+)?" required><br>
+
+                <label for="campaign">Campaign:</label>
+                <input type="number" name="campaign" required><br>
+
+                <label for="pdays">Pdays:</label>
+                <input type="number" name="pdays" required><br>
+
+                <label for="previous">Previous:</label>
+                <input type="number" name="previous" required><br>
+
+                <label for="poutcome">Poutcome:</label>
+                <select name="poutcome" required>
+                    <option value="failure">Failure</option>
+                    <option value="success">Success</option>
+                    <option value="unknown">Unknown</option>
+                    <option value="other">Other</option>
+                </select><br>
+                <button type="button" onclick="predict()">Predict</button>
+            </form>
+        </div>
+    </div>
+    <div class="form-container">
+        <div style="flex: 1; margin-left: 200px;">
+            <form id="file-form" enctype="multipart/form-data" style="background: FFFFE0">
+                <h2 style="text-align: center;">Enter Customer dataset</h2>
+                <label for="file" style="display: inline-block; width: auto; margin-bottom: 10px;">Upload CSV File:</label>
+                <input type="file" name="file" accept=".csv" required><br>
+                <button type="button" onclick="predictFile()">Predict</button>
+            </form>
+        </div>
+    </div>
+    <!--  Display Result-->
+    <div class="result" id="result-div"></div>
+
+    <!-- Progress Bar -->
+    <div id="progress-bar" style="margin-right: 100px">
+        ...
+    </div>
+
+    <script>
+        function openForm(formId) {
+
+            var forms = document.getElementsByTagName("form");
+            for (var i = 0; i < forms.length; i++) {
+                forms[i].style.display = "none";
+            }
+
+            // Display  selected form
+            var form = document.getElementById(formId);
+            form.style.display = "block";
+            var windowHeight = window.innerHeight;
+            var formHeight = form.clientHeight;
+            var marginTop = (windowHeight - formHeight) / 2;
+            // Hiding the progress bar and result div when a form is opened
+            hideProgressBar();
+            hideResultDiv();
+            hideTextAreas();
+        }
+
+        function predict() {
+            var form = document.getElementById("predict-form");
+            var formData = new FormData(form);
+
+            // Showing the progress bar
+            showProgressBar();
+
+            fetch("/predict", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    hideProgressBar();
+                    displayResult(data.result, data.percentage);
+                })
+                .catch(error => {
+                    hideProgressBar();
+                    console.error("Error predicting:", error);
+                });
+        }
+
+        function predictFile() {
+            var form = document.getElementById("file-form");
+            var formData = new FormData(form);
+
+            // Showing progress bar
+            showProgressBar();
+
+            fetch("/predict-file", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    hideProgressBar();
+                    displayResult(data.result, data.percentage);
+                })
+                .catch(error => {
+                    hideProgressBar();
+                    console.error("Error predicting file:", error);
+                });
+        }
+
+        function showProgressBar() {
+            document.getElementById("progress-bar").style.display = "block";
+            document.getElementById('ana').style.display = "none";
+        }
+
+        function hideProgressBar() {
+            document.getElementById("progress-bar").style.display = "none";
+            document.getElementById('ana').style.display = "block";
+        }
+
+        function displayResult(result, percentage) {
+            var resultDiv = document.getElementById("result-div");
+            resultDiv.style.display = "block";
+            resultDiv.innerHTML = `<p>${result}</p>`;
+
+            // Updating progress bar value
+            var progressBar = document.getElementById("file");
+            progressBar.value = percentage;
+            progressBar.innerHTML = `${percentage}%`;
+        }
+
+        function hideResultDiv() {
+            document.getElementById("result-div").style.display = "none";
+        }
+
+        function redirectToPage(page) {
+            // Redirecting to the specified HTML page
+            window.location.href = page;
+        }
+
+        function displayText1() {
+        // Showing text display area
+        document.getElementById('text1-display').style.display = 'block';
+
+
+        document.getElementById('text2-display').style.display = 'none';
+        document.getElementById('text3-display').style.display = 'none';
+
+        hideFormButtons();
+    }
+
+        function displayText2() {
+
+            document.getElementById('text2-display').style.display = 'block';
+
+            // Hide other text areas
+            document.getElementById('text1-display').style.display = 'none';
+            document.getElementById('text3-display').style.display = 'none';
+
+            hideFormButtons();
+        }
+
+        function displayText3() {
+
+            document.getElementById('text3-display').style.display = 'block';
+
+            // Hide other text areas
+            document.getElementById('text1-display').style.display = 'none';
+            document.getElementById('text2-display').style.display = 'none';
+
+            hideFormButtons();
+        }
+
+        function hideFormButtons() {
+            document.getElementById('predict-form').style.display = 'none';
+            document.getElementById('file-form').style.display = 'none';
+            document.getElementById("result-div").style.display = "none";
+        }
+
+
+        function hideTextAreas() {
+            document.getElementById('text1-display').style.display = 'none';
+            document.getElementById('text2-display').style.display = 'none';
+            document.getElementById('text3-display').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>
